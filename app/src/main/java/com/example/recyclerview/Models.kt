@@ -1,6 +1,6 @@
 package com.example.recyclerview
 
-class Customer{
+class Item{
     var id : Int = 0
     var name:String = ""
 }
