@@ -10,11 +10,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item.view.*
 
-class CustomerAdapter(mCtx: Context, val customers: ArrayList<Item>) : RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
+class CustomerAdapter(mCtx: Context, val customers: ArrayList<Example>) : RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
     val mCtx = mCtx
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtName = itemView.textView
+        val txtYear = itemView.textView2
         val btnDelete = itemView.btnDelete
     }
 
@@ -35,22 +36,24 @@ class CustomerAdapter(mCtx: Context, val customers: ArrayList<Item>) : RecyclerV
 
     override fun onBindViewHolder(holder: CustomerAdapter.ViewHolder, position: Int) {
 
-        val item: Item = customers[position]
+        val item: Example = customers[position]
         holder.txtName.text = item.name
+        holder.txtYear.text = item.year.toString()
         holder.btnDelete.setOnClickListener {
             val customerName = item.name
-            if (MainActivity.dbHandler.deleteCustomer(item.id)) {
+            val customerYear = item.year
+            if (MainActivity.dbHandler.deleteCustomer(item.id!!.toInt())) {
+            if (MainActivity.dbHandler.deleteCustomer(item.id!!.toInt())) {
                 customers.removeAt(position)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, customers.size)
-                Toast.makeText(mCtx, "Item: $customerName Deleted", Toast.LENGTH_SHORT).show()
-
+//                Toast.makeText(mCtx, "Item: $customerName Deleted", Toast.LENGTH_SHORT).show()
             }
             }
-        }
+        }}}
 
 //        holder.btnDelete.setOnClickListener {
 //            customers.removeAt(position)
 //            removedPosition = position
 //            notifyDataSetChanged()
-        }
+

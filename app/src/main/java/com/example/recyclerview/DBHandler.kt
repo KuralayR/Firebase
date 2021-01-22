@@ -11,11 +11,12 @@ import java.lang.Exception
 class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) :
         SQLiteOpenHelper(context, DATABASE_NAME, factory, 1) {
     companion object{
-        private val DATABASE_NAME = "MyData.db"
+        private val DATABASE_NAME = "DatabaseExample.db"
 
-        val TABLE_NAME = "Customers"
-        val ID = "customerid"
-        val NAME = "customername"
+        val TABLE_NAME = "NewExample"
+        val ID = "exampleid"
+        val NAME = "examplename"
+        val YEAR = "exampleyear"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -23,25 +24,26 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 //                "$ID INTEGER PRIMARY KEY AUTOINCREMENT," +
 //                "$NAME TEXT")
 //        db?.execSQL(CREATE_TABLE)
-        db!!.execSQL("CREATE TABLE $TABLE_NAME ($ID  INTEGER PRIMARY KEY, $NAME TEXT)")
+        db!!.execSQL("CREATE TABLE $TABLE_NAME ($ID  INTEGER PRIMARY KEY, $NAME TEXT, $YEAR INT)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         TODO("Not yet implemented")
     }
 
-    fun getCustomers (mCtx : Context) : ArrayList<Item>{
+    fun getCustomers (mCtx : Context) : ArrayList<Example>{
         val qry = "Select * FROM $TABLE_NAME"
         val db = this.readableDatabase
         val cursor = db.rawQuery(qry, null)
-        val customers = ArrayList<Item>()
+        val customers = ArrayList<Example>()
 
         if (cursor.count == 0)
             Toast.makeText(mCtx, "No records found", Toast.LENGTH_SHORT).show() else
         {while (cursor.moveToNext()){
-            val customer = Item()
-            customer.id = cursor.getInt(cursor.getColumnIndex(ID))
+            val customer = Example()
+            customer.id = cursor.getString(cursor.getColumnIndex(ID))
             customer.name = cursor.getString(cursor.getColumnIndex(NAME))
+            customer.year = cursor.getInt(cursor.getColumnIndex(YEAR))
             customers.add(customer)
         }
             Toast.makeText(mCtx, "${cursor.count.toString()} Record found", Toast.LENGTH_SHORT).show()
@@ -50,9 +52,11 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         db.close()
         return customers
 }
-    fun addCustomer(mCtx: Context, item: Item){
+    fun addCustomer(mCtx: Context, example: Example){
         val values = ContentValues()
-        values.put(NAME, item.name)
+        values.put(ID, example.id )
+        values.put(NAME, example.name)
+        values.put(YEAR, example.year)
         val db = this.writableDatabase
         try {
             db.insert(TABLE_NAME, null, values)
